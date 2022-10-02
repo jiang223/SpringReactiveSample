@@ -1,0 +1,7 @@
+authorizes:
+  - patterns: /aaa
+    httpMethods: GET
+    roles: USER
+  - patterns: /menu
+    httpMethods: GET
+    roles: USER
