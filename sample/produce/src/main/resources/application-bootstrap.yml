@@ -1,0 +1,17 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: producer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${REGISTER_HOST:ubuntu.wsl}:${REGISTER_PORT:8848}
+        ip: 172.25.224.1
+      config:
+        server-addr: ${REGISTER_HOST:ubuntu.wsl}:${REGISTER_PORT:8848}
+        file-extension: yml
+    sentinel:
+      transport:
+        dashboard: ${SENTINEL_DASHBOARD_HOST:ubuntu.wsl}:${SENTINEL_DASHBOARD_PORT:7070}
+        clientIp: 172.25.224.1

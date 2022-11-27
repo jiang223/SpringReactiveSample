@@ -1,0 +1,48 @@
+spring:
+  profiles:
+    active: local
+    include: bootstrap
+  redis:
+    host: ${REDIS_HOST:ubuntu.wsl}
+    port: ${REDIS_PORT:6379}
+    #password: ${REDIS_PASSWORD:}
+    lettuce:
+      pool:
+        max-active: 300
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    #url: jdbc:${DATASOURCE_DBTYPE:mysql}://${DATASOURCE_HOST:ubuntu.wsl}:${DATASOURCE_PORT:3306}/sc_gateway?characterEncoding=UTF-8&useUnicode=true&useSSL=false
+    url: jdbc:${DATASOURCE_DBTYPE:mysql}://ubuntu.wsl:${DATASOURCE_PORT:3306}/sc_admin?characterEncoding=UTF-8&useUnicode=true&useSSL=false
+    username: ${DATASOURCE_USERNAME:root}
+    password: ${DATASOURCE_PASSWORD:password}
+
+jetcache:
+  statIntervalMinutes: 1
+  areaInCacheName: false
+  hidePackages: com.springboot.cloud
+  local:
+    # 默认永久本地缓存
+    default:
+      type: caffeine
+      keyConvertor: fastjson
+  remote:
+    # 默认永久的远程缓存
+    default:
+      type: redis
+      keyConvertor: fastjson
+      valueEncoder: kryo
+      valueDecoder: kryo
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: ${REDIS_HOST:ubuntu.wsl}
+      port: ${REDIS_PORT:6379}
+logging:
+  level:
+    com.springboot.cloud: debug
+    com.jalja.org.spring: debug
+    org.springframework.web: trace
+    org.springframework.security: trace
+    org.springframework.security.oauth2: debug
+    root: info

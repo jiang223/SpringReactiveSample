@@ -1,0 +1,23 @@
+server:
+  port: ${SERVER_PORT:8443}
+spring:
+  application:
+    name: gateway-web
+  cloud:
+    nachos:
+      discovery:
+        server-addr: ${REGISTER_HOST:ubuntu.wsl}:${REGISTER_PORT:8848}
+        ip: 172.25.224.1
+    sentinel:
+      transport:
+        dashboard: ${SENTINEL_DASHBOARD_HOST:ubuntu.wsl}:${SENTINEL_DASHBOARD_PORT:7070}
+        clientIp: 172.25.224.1
+#    gateway:
+#      discovery:
+#        locator:
+#          enabled: true
+#      routes:
+#        - id: nacos-demo-test
+#          uri: lb://producer/hello
+#          predicates:
+#            - Path= /hello

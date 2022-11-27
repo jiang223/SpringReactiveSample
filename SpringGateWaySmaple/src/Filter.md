@@ -1,0 +1,6 @@
+## 1、默认Filter
+DefaultWebFilterChain 包含handle与filters属性  
+handel:过滤器走完调用的类
+filters:过滤器  WebHttpHandlerBuilder.applicationContext中赋值
+
+filter:实现WebFilter类，如MetricsWebFilter。在WebFluxMetricsAutoConfiguration中创建bean
