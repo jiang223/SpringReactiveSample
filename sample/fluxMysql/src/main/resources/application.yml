@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    active: local
+    include: bootstrap
   r2dbc:
     url: r2dbcs:mysql://ubuntu.wsl:3306/r2dbc
     username: root

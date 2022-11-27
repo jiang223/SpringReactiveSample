@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.springboot.cloud</groupId>
-    <artifactId>common</artifactId>
+    <artifactId>webflux.common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>common</name>
+    <name>webflux.common</name>
     <description>Demo Common project for Spring Boot</description>
 
     <modules>

@@ -14,6 +14,7 @@ import static io.r2dbc.spi.ConnectionFactoryOptions.*;
  * @author HelloWood
  */
 @Configuration
+@Deprecated
 public class DatabaseConfig extends AbstractR2dbcConfiguration {
 
     @Value("${spring.datasource.host}")

@@ -1,0 +1,19 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: fluxMysql
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${REGISTER_HOST:ubuntu.wsl}:${REGISTER_PORT:8848}
+      config:
+        server-addr: ${REGISTER_HOST:ubuntu.wsl}:${REGISTER_PORT:8848}
+        file-extension: yml
+    sentinel:
+      transport:
+        port: 8729
+        dashboard: ${SENTINEL_DASHBOARD_HOST:ubuntu.wsl}:${SENTINEL_DASHBOARD_PORT:7070}
+    bus:
+      trace:
+        enabled: true
