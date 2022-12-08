@@ -16,6 +16,7 @@
         <module>consumer</module>
         <module>produce</module>
         <module>fluxMysql</module>
+        <module>ibmmqSpringJms</module>
     </modules>
     <dependencies>
         <dependency>
