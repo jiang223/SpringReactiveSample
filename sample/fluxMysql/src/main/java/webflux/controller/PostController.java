@@ -1,14 +1,17 @@
 package webflux.controller;
 
 
-import webflux.common.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import webflux.model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.ReactiveHashOperations;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import webflux.common.NotFoundException;
+import webflux.model.Post;
 import webflux.repository.PostRepository;
 
 /**
@@ -22,6 +25,9 @@ public class PostController {
 
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    @Qualifier("reactiveRedisTemplate")
+    private ReactiveRedisTemplate redisTemplate;
 
     @GetMapping
     public Flux<Post> list() {
@@ -30,8 +36,14 @@ public class PostController {
 
     @GetMapping("/{id}")
     public Mono<Post> get(@PathVariable("id") Long id) {
-        return postRepository.findById(id)
-                             .switchIfEmpty(Mono.error(new NotFoundException(String.valueOf(id))));
+        ReactiveHashOperations<String, Long, Post> opsForHash = redisTemplate.opsForHash();
+        return opsForHash.get("USER",id)
+                .switchIfEmpty( postRepository.findById(id))
+                .map(p-> {opsForHash.put("USER",id,p);p.setTitle(p.getTitle()+"redis");return p;})
+                .switchIfEmpty(Mono.error(new NotFoundException(String.valueOf(id))));
+
+        //return postRepository.findById(id)
+         //                    .switchIfEmpty(Mono.error(new NotFoundException(String.valueOf(id))));
     }
 
     @PutMapping("/{id}")

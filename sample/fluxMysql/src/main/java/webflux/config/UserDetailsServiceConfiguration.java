@@ -8,6 +8,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import webflux.common.AuthorityReactiveAuthorizationManager;
 import webflux.service.IUserService;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -17,7 +18,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
  */
 @EnableWebFluxSecurity()
 @EnableReactiveMethodSecurity
-public class UserDetailsServiceConfiguration {
+public class UserDetailsServiceConfiguration  {
     @Autowired
     private IUserService userService;
 
@@ -43,7 +44,9 @@ public class UserDetailsServiceConfiguration {
         http.authorizeExchange((authorize) -> authorize
                         .pathMatchers("/admin/**").hasRole("ADMIN")
                         .pathMatchers("/db/**").hasRole("ADMIN")
-                        .pathMatchers("/**").permitAll()
+                        .and().authorizeExchange().anyExchange().access(new AuthorityReactiveAuthorizationManager<>(userService))
+                       .and()
+                        .formLogin()
                 ).httpBasic(withDefaults())
                 ;
         // @formatter:on

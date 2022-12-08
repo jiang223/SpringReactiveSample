@@ -1,11 +1,8 @@
 package webflux.model;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
-
-import java.util.Date;
 
 /**
  * @author HelloWood
@@ -26,7 +23,7 @@ public class Post {
 
     private String content;
 
-    @CreatedDate
-    private Date createDate;
+//    @CreatedDate
+//    private Date createDate;
 
 }

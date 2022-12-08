@@ -2,7 +2,24 @@ spring:
   profiles:
     active: local
     include: bootstrap
+  redis:
+    host: ${REDIS_HOST:ubuntu.wsl}
+    port: ${REDIS_PORT:6379}
+    #password: ${REDIS_PASSWORD:}
+    lettuce:
+      pool:
+        max-active: 300
   r2dbc:
     url: r2dbcs:mysql://ubuntu.wsl:3306/r2dbc
     username: root
     password: password
+
+logging:
+  level:
+#    com.springboot.cloud: debug
+#    com.jalja.org.spring: debug
+#    org.springframework.web: trace
+#    org.springframework.security: trace
+#    org.springframework.security.oauth2: debug
+    # com.alibaba.nacos.client: debug
+    root: debug
