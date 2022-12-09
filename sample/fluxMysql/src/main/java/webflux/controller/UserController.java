@@ -4,6 +4,7 @@ package webflux.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.http.HttpStatus;
@@ -37,8 +38,8 @@ public class UserController {
         Query query= Query.empty();
         if(!StringUtils.isEmpty(queryUser.getUsername()))
             query=query(where("username").like(queryUser.getUsername()));
-        query.with(queryUser.getPage());
-        return template.select(User.class).from("user").matching(query).all();
+        query=query.with(PageRequest.of(queryUser.getPage(),queryUser.getSize()));
+        return template.select(User.class).from("users").matching(query).all();
 
     }
 
@@ -62,7 +63,10 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<User> save(@RequestBody User User) {
-        return UserRepository.save(User);
+
+        return UserRepository.save(User)
+                .doOnError(throwable -> Mono.error(new NotFoundException(String.valueOf(User))))
+                ;
     }
 
     @DeleteMapping("/{id}")
