@@ -1,6 +1,7 @@
 package webflux.model;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import javax.persistence.Basic;
@@ -17,6 +18,7 @@ import java.sql.Timestamp;
 public class UserRoleRelation {
     @Basic
     @Column(name = "id")
+    @Id
     private String id;
     @Basic
     @Column(name = "user_id")
