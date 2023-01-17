@@ -33,7 +33,7 @@ public class MenuService implements IMenuService{
                 })
                 .collectList()
                 .map(list->{
-                    menuPageRes.setMenuPageRes(list);
+                    menuPageRes.setChildren(list);
                     return menuPageRes;
                 });
          //return  menuPageRes;

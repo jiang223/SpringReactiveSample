@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class MenuQuery {
         private String username;
-        private int page;
-        private int size;
+        private int pageNo;
+        private int pageSize;
 
 
 }

@@ -1,6 +1,7 @@
 package webflux.model;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -15,9 +16,9 @@ import java.time.LocalDate;
 @Table("menu")
 public class Menu {
     @Id
-    private String id;
+    private Long id;
 
-    private String parentId;
+    private Long parentId;
 
     private String type;
 
@@ -30,7 +31,7 @@ public class Menu {
     private String description;
 
     private Integer orderNum;
-
+    @CreatedDate
     private LocalDate createdTime;
 
     private LocalDate updatedTime;

@@ -11,12 +11,12 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import webflux.common.NotFoundException;
 import webflux.model.Menu;
 import webflux.model.vo.MenuPageRes;
 import webflux.model.vo.MenuQuery;
+import webflux.model.vo.PageRes;
 import webflux.service.IMenuService;
 
 import static org.springframework.data.relational.core.query.Criteria.where;
@@ -37,22 +37,32 @@ public class MenuController {
     IMenuService menuService;
 
     @GetMapping
-    public Flux<MenuPageRes> getPage(@RequestBody MenuQuery queryMenu) {
+    public Mono<PageRes> getPage(MenuQuery queryMenu) {
+        PageRes pageRes= new PageRes();
+        pageRes.setPageSize(queryMenu.getPageSize());
+        pageRes.setTotalPage(queryMenu.getPageNo());
         Query query= Query.empty();
         if(!StringUtils.isEmpty(queryMenu.getUsername()))
             query=query(where("Menuname").like(queryMenu.getUsername()));
         query=query.query(where("parent_id").is("-1"));
-        query=query.with(PageRequest.of(queryMenu.getPage(),queryMenu.getSize()));
-        query=query.sort(Sort.by("order_num"));
-        return template.select(Menu.class).from("menu").matching(query).all()
+        Query query2=query.with(PageRequest.of(queryMenu.getPageNo()-1,queryMenu.getPageSize()));
+        query2=query2.sort(Sort.by("order_num"));
+        Query finalQuery = query;
+        return template.select(Menu.class).from("menu").matching(query2).all()
                 .flatMap(menu->{
                     MenuPageRes menuPageRes=new MenuPageRes();
                     BeanUtils.copyProperties(menu,menuPageRes);
                     return menuService.reInMenu(menuPageRes);
                     //return menuPageRes;
+                })
+                .collectList()
+                .map(menuPageRes -> {pageRes.setData(menuPageRes);return pageRes;})
+                .flatMap(aaa -> template.count(finalQuery,Menu.class))
+                .map(aLong -> {
+                    pageRes.setTotalCount(Math.toIntExact(aLong));
+                    pageRes.setTotalPage((int) (aLong/queryMenu.getPageSize()));
+                    return  pageRes;
                 });
-
-
     }
 
     @GetMapping("/{id}")
@@ -83,7 +93,7 @@ public class MenuController {
     @DeleteMapping("/{id}")
     public Mono<Menu> delete(@PathVariable("id") Long id) {
         Menu Menu=new Menu();
-        Menu.setId(String.valueOf(id));
+        Menu.setId(id);
         return
                 template.selectOne(query(where("id").is(id)),Menu.class)
                 .switchIfEmpty(Mono.error(new NotFoundException(String.valueOf(id))))
